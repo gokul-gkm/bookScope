@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiGithub, FiTwitter, FiInstagram } from 'react-icons/fi';
+import { FiGithub, FiInstagram } from 'react-icons/fi';
 
 const Footer = () => {
   return (
@@ -11,7 +11,6 @@ const Footer = () => {
           </div>
           <div className="flex space-x-4">
             <a href="#" className="hover:text-indigo-400"><FiGithub size={20} /></a>
-            <a href="#" className="hover:text-indigo-400"><FiTwitter size={20} /></a>
             <a href="#" className="hover:text-indigo-400"><FiInstagram size={20} /></a>
           </div>
         </div>
