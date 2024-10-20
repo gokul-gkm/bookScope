@@ -1,0 +1,85 @@
+version: '3'
+
+services:
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - api-gateway
+
+  api-gateway:
+    build: ./api-gateway
+    environment:
+      - PORT=7000
+      - JWT_SECRET=your_jwt_secret_here
+      - USER_SERVICE_URL=user-service:50051
+      - BOOK_SERVICE_URL=book-service:50052
+      - REVIEW_SERVICE_URL=review-service:50053
+
+    volumes:
+         - proto-files:/usr/src/app/src/protos
+    
+    depends_on:
+      - user-service
+      - book-service
+      - review-service
+
+  user-service:
+    build: ./user-service
+    environment:
+      - PORT=50051
+      - MONGO_URI=mongodb://user-mongo:27017/user_service
+      - JWT_SECRET=your_jwt_secret_here
+    volumes:
+      - proto-files:/usr/src/app/src/protos   
+    depends_on:
+      - user-mongo
+
+  book-service:
+    build: ./book-service
+    environment:
+      - PORT=50052
+      - MONGO_URI=mongodb://book-mongo:27017/book_service
+    volumes:
+      - proto-files:/usr/src/app/src/protos  
+    depends_on:
+      - book-mongo
+
+  review-service:
+    build: ./review-service
+    environment:
+      - PORT=50053
+      - MONGO_URI=mongodb://review-mongo:27017/review_service
+    volumes:
+      - proto-files:/usr/src/app/src/protos 
+    depends_on:
+      - review-mongo
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api-gateway
+
+  user-mongo:
+    image: mongo:latest
+    volumes:
+      - user-mongo-data:/data/db
+
+  book-mongo:
+    image: mongo:latest
+    volumes:
+      - book-mongo-data:/data/db
+
+  review-mongo:
+    image: mongo:latest
+    volumes:
+      - review-mongo-data:/data/db
+
+volumes:
+  user-mongo-data:
+  book-mongo-data:
+  review-mongo-data:
+  proto-files:

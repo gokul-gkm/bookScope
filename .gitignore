@@ -1,0 +1,11 @@
+api-gateway/node_modules
+book-service/node_modules
+frontend/node_modules
+review-service/node_modules
+user-service/node_modules
+
+api-gateway/.env
+book-service/.env
+frontend/.env
+review-service/.env
+user-service/.env

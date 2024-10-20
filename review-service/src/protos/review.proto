@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package review;
+
+service ReviewService {
+  rpc ViewAllReviews (Empty) returns (ReviewsResponse);
+  rpc ViewReview (ReviewRequest) returns (ReviewResponse);
+  rpc AddReview (NewReview) returns (ReviewResponse);
+  rpc EditReview (EditReview) returns (ReviewResponse);
+  rpc DeleteReview (DeleteReviewRequest) returns (Empty);
+  rpc GetReviewsByBookId(BookIdRequest) returns (ReviewsResponse);
+}
+
+message Empty {}
+
+message ReviewRequest {
+  string id = 1;
+}
+
+message BookIdRequest { 
+    string bookId = 1;
+}
+
+message DeleteReviewRequest {
+  string id = 1;
+  string userId = 2;
+}
+
+message NewReview {
+  string bookId = 1;
+  string userId = 2;
+  int32 rating = 3;
+  string comment = 4;
+}
+
+message EditReview {
+  string id = 1;
+  string bookId = 2;
+  string userId = 3;
+  int32 rating = 4;
+  string comment = 5;
+}
+
+message Review {
+  string id = 1;
+  string bookId = 2;
+  string userId = 3;
+  int32 rating = 4;
+  string comment = 5;
+  string createdAt = 6;
+  string updatedAt = 7;
+}
+
+message ReviewsResponse {
+  repeated Review reviews = 1;
+}
+
+message ReviewResponse {
+  Review review = 1;
+}

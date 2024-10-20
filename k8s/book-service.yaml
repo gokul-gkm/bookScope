@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: book-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: book-service
+  template:
+    metadata:
+      labels:
+        app: book-service
+    spec:
+      containers:
+      - name: book-service
+        image: gokulgkm/book-service:latest
+        ports:
+        - containerPort: 50052
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: book-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 50052
+    targetPort: 50052
+  selector:
+    app: book-service
