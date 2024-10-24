@@ -77,6 +77,11 @@ jobs:
         eval $(minikube docker-env)  # Ensure Docker is using Minikube's Docker environment
         kubectl version  # Check Kubernetes setup
 
+     # Get the Minikube IP
+    - name: Get Minikube IP
+      run: |
+        echo "Minikube IP: $(minikube ip)"
+
     # Deploy to Minikube using kubectl
     - name: Deploy to Minikube
       run: |
