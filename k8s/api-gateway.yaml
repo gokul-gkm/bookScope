@@ -26,6 +26,13 @@ spec:
           value: "http://book-service:50052"
         - name: REVIEW_SERVICE_URL
           value: "http://review-service:50053"
+        volumeMounts:
+        - name: proto-files
+          mountPath: /usr/src/app/src/protos 
+      volumes:
+      - name: proto-files
+        configMap:
+          name: proto-files-configmap 
 
 ---
 apiVersion: v1

@@ -38,6 +38,7 @@ jobs:
       run: npm install
       working-directory: ./user-service
 
+    # Build Docker images for all services
     - name: Build Docker images
       run: |
         docker build -t gokulgkm/api-gateway ./api-gateway
@@ -47,9 +48,11 @@ jobs:
         docker build -t gokulgkm/nginx ./nginx
         docker build -t gokulgkm/user-service ./user-service
 
+    # Log in to Docker Hub
     - name: Log in to Docker Hub
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
+    # Push Docker images to Docker Hub
     - name: Push Docker images
       run: |
         docker push gokulgkm/api-gateway:latest
@@ -59,7 +62,34 @@ jobs:
         docker push gokulgkm/review-service:latest
         docker push gokulgkm/nginx:latest
 
-    - name: Deploy to Minikube
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # Set up Minikube environment and deploy
+    - name: Set up Minikube
       run: |
         minikube start --driver=docker
+        eval $(minikube docker-env)  # Ensure Docker is using Minikube's Docker environment
+        kubectl version  # Check Kubernetes setup
+
+    # Deploy to Minikube using kubectl
+    - name: Deploy to Minikube
+      run: |
         kubectl apply -f k8s/
+
+    # Wait for Kubernetes services to be deployed successfully
+    - name: Wait for deployment to finish
+      run: |
+        kubectl rollout status deployment/api-gateway
+        kubectl rollout status deployment/user-service
+        kubectl rollout status deployment/book-service
+        kubectl rollout status deployment/review-service
+
+    # Verify that all pods are running
+    - name: Verify deployments
+      run: kubectl get pods
